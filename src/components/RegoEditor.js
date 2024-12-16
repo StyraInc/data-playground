@@ -1,5 +1,6 @@
 import {javascript} from "npm:@codemirror/lang-javascript"; // TODO
 import {EditorView, keymap} from "npm:@codemirror/view";
+import {lintGutter} from "npm:@codemirror/lint";
 import {button} from "npm:@observablehq/inputs";
 import {basicSetup} from "npm:codemirror";
 import {putPolicy} from "./helpers.js";
@@ -8,8 +9,11 @@ export function RegoEditor({
   value = "",
   style = "font-size: 14px;",
   opa = "http://127.0.0.1:8181/",
-  id = ""
+  id = "",
+  linter
 } = {}) {
+  if (!linter) throw new Error("need linter argument");
+
   const parent = document.createElement("div");
   parent.style = style;
   parent.value = value;
@@ -24,7 +28,9 @@ export function RegoEditor({
     doc: value,
     extensions: [
       basicSetup,
-      javascript(),
+      //javascript(),
+      lintGutter(),
+      linter,
       keymap.of([
         {key: "Shift-Enter", preventDefault: true, run},
         {key: "Mod-s", preventDefault: true, run}

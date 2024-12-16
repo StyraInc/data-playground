@@ -15,10 +15,10 @@ partial_eval(inp, unknowns, query) := http.send({
 
 to_conditions(inp, unknowns, query) := conds(partial_eval(inp, unknowns, query))
 
-conds(pe) := pe if pe.code
+conds(pe) := pe if pe.errors
 
 conds(pe) := res if {
-	not pe.code
+	not pe.errors
 	not pe.result.support # "support modules" are not supported right now
 	res := or_({query_to_condition(q) | some q in pe.result.queries})
 }
