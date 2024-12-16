@@ -4,9 +4,10 @@ import {button} from "npm:@observablehq/inputs";
 import {basicSetup} from "npm:codemirror";
 import {putPolicy} from "./helpers.js";
 
-export function Editor({
+export function RegoEditor({
   value = "",
   style = "font-size: 14px;",
+  opa = "http://127.0.0.1:8181/",
   id = ""
 } = {}) {
   const parent = document.createElement("div");
@@ -31,7 +32,7 @@ export function Editor({
       EditorView.updateListener.of(async update => {
         if (update.docChanged) {
           try {
-            const resp = await putPolicy(id, String(editor.state.doc));
+            const resp = await putPolicy(opa, id, String(editor.state.doc));
             // If the server accepts it, it's valid, let's emit an event
             parent.value = String(editor.state.doc);
             parent.dispatchEvent(new InputEvent("input", {bubbles: true}));

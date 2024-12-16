@@ -5,7 +5,7 @@ sql:
 # Data Playground
 
 ```js
-import {Editor} from "./components/Editor.js";
+import {RegoEditor} from "./components/RegoEditor.js";
 import {JSONEditor} from "./components/JSONEditor.js";
 import {evalPolicy, putPolicy} from "./components/helpers.js";
 ```
@@ -16,8 +16,9 @@ import {evalPolicy, putPolicy} from "./components/helpers.js";
 <h2>Data Policy</h2>
 
 ```js
+const opa = "http://127.0.0.1:8181/";
 const filtersRego = await FileAttachment("policies/filters.rego").text();
-const regoInput = view(Editor({id: "filters.rego", value: filtersRego}));
+const regoInput = view(RegoEditor({id: "filters.rego", opa, value: filtersRego}));
 ```
 </div>
 <div class="card">
@@ -36,10 +37,9 @@ const evalInput0 = JSON.parse(evalInput);
 
 ```js
 const convertRego = await FileAttachment("policies/convert.rego").text();
-await putPolicy("convert.rego", convertRego);
-await putPolicy("filters.rego", regoInput);
+await putPolicy(opa, "filters.rego", regoInput);
 
-const result = (await (await evalPolicy(evalInput0)).json()).result;
+const result = (await (await evalPolicy(opa, evalInput0)).json()).result;
 const query = result.query;
 ```
 

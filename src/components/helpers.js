@@ -1,6 +1,5 @@
-const OPA_HOST = "http://127.0.0.1:8181/";
-export async function putPolicy(id, code) {
-  const resp = await fetch(`${OPA_HOST}v1/policies/${id}`, {
+export async function putPolicy(opa, id, code) {
+  const resp = await fetch(`${opa}v1/policies/${id}`, {
     method: "PUT",
     body: code,
     headers: {
@@ -11,8 +10,8 @@ export async function putPolicy(id, code) {
   return resp;
 }
 
-export  async function evalPolicy(input, path = "data/filters") {
-  const resp = await fetch(`${OPA_HOST}v1/${path}`, {
+export  async function evalPolicy(opa, input, path = "data/filters") {
+  const resp = await fetch(`${opa}v1/${path}`, {
     method: "POST",
     body: JSON.stringify({input}),
     headers: {
