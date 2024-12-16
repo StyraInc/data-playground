@@ -27,14 +27,21 @@ query_to_condition(q) := and_({expr_to_condition(e) | some e in q})
 
 expr_to_condition(e) := op_(op(e), field(e), value(e))
 
-op(e) := o if {
+op(e) := r if {
 	e.terms[0].type == "ref"
 	e.terms[0].value[0].type == "var"
 	o := e.terms[0].value[0].value
-	is_valid(o)
+	r := is_valid(o)
 }
 
-is_valid(o) if o in {"eq", "lt", "gt", "neq"}
+is_valid(o) := u if {
+	o in {"eq", "lt", "gt", "neq"}
+	u := _replace(o)
+}
+
+_replace("neq") := "ne"
+
+_replace(x) := x if x != "neq"
 
 field(e) := f if {
 	# find the operand with 'input.*'

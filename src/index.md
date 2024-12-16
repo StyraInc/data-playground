@@ -37,7 +37,7 @@ const evalInput0 = JSON.parse(evalInput);
 
 ```js
 const convertRego = await FileAttachment("policies/convert.rego").text();
-await putPolicy(opa, "filters.rego", regoInput);
+await putPolicy(opa, "convert.rego", convertRego);
 
 const result = (await (await evalPolicy(opa, evalInput0)).json()).result;
 const query = result.query;
