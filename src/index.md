@@ -66,7 +66,7 @@ view(errors);
 <h2>Lookup Results</h2>
 
 ```js
-const stmt = `select u.name as user, p.name as product, p.price
+const stmt = `select u.name as user, p.name as product, p.price::FLOAT as price
 from orders.orders o
 inner join orders.users u on o.user_id = u.id
 inner join orders.order_items i on o.order_id = i.order_id
