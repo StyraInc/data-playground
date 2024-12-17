@@ -1,56 +1,66 @@
-import {javascript} from "npm:@codemirror/lang-javascript"; // TODO
-import {EditorView, keymap} from "npm:@codemirror/view";
-import {lintGutter} from "npm:@codemirror/lint";
-import {button} from "npm:@observablehq/inputs";
+import {EditorView} from "npm:@codemirror/view";
+import {lintGutter, linter} from "npm:@codemirror/lint";
 import {basicSetup} from "npm:codemirror";
-import {putPolicy} from "./helpers.js";
+import {putPolicy, evalPolicy} from "./helpers.js";
 
 export function RegoEditor({
-  value = "",
+  rego = "",
+  value,
   style = "font-size: 14px;",
   opa = "http://127.0.0.1:8181/",
   id = "",
-  linter
+  evalInput = {},
 } = {}) {
-  if (!linter) throw new Error("need linter argument");
-
   const parent = document.createElement("div");
   parent.style = style;
   parent.value = value;
 
-  const run = () => {
-    parent.value = String(editor.state.doc);
-    parent.dispatchEvent(new InputEvent("input", {bubbles: true}));
-  };
-
   const editor = new EditorView({
     parent,
-    doc: value,
+    doc: rego,
     extensions: [
       basicSetup,
-      //javascript(),
       lintGutter(),
-      linter,
-      keymap.of([
-        {key: "Shift-Enter", preventDefault: true, run},
-        {key: "Mod-s", preventDefault: true, run}
-      ]),
-      EditorView.updateListener.of(async update => {
-        if (update.docChanged) {
-          try {
-            const resp = await putPolicy(opa, id, String(editor.state.doc));
-            // If the server accepts it, it's valid, let's emit an event
-            parent.value = String(editor.state.doc);
-            parent.dispatchEvent(new InputEvent("input", {bubbles: true}));
-          } catch (e) { // not JSON yet, ignore
-          }
+      linter(async view => {
+        const doc = view.state.doc;
+        const resp = await putPolicy(opa, id, String(editor.state.doc), false)
+        const payload = await resp.json();
+        if (payload.code) { // bad rego
+          parent.value = String(""); // this means "no query produced"
+          parent.dispatchEvent(new InputEvent("input", {bubbles: true}));
+
+          return payload.errors.map(({code, message, location: {row, col}}) => ({
+            from: doc.line(row).from + col - 1,
+            to: doc.line(row+1).from, // next line, i.e., end of line used in "from"
+            severity: "error",
+            message: `${code}: ${message}`,
+          }));
         }
+        // If we make it this far, the policy is on the server, so let's eval it:
+        const result = (await (await evalPolicy(opa, evalInput)).json()).result;
+        const query = result.query;
+        const errors = result.conditions?.errors;
+        if (errors) {
+          parent.value = String(""); // this means "no query produced"
+          parent.dispatchEvent(new InputEvent("input", {bubbles: true}));
+
+          return errors.map(({location: {row, col}, message}) => ({
+            from: doc.line(row).from + col - 1,
+            to: doc.line(row+1).from, // next line, i.e., end of line used in "from"
+            severity: "warning",
+            message,
+          }));
+        }
+
+        parent.value = String(result.query);
+        parent.dispatchEvent(new InputEvent("input", {bubbles: true}));
+        return [];
+      }, {
+        delay: 200,
       }),
     ]
   });
 
   parent.addEventListener("input", (event) => event.isTrusted && event.stopImmediatePropagation());
-  parent.appendChild(button([["Update", run]]));
-
   return parent;
 }

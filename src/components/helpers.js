@@ -1,4 +1,4 @@
-export async function putPolicy(opa, id, code) {
+export async function putPolicy(opa, id, code, raise = true) {
   const resp = await fetch(`${opa}v1/policies/${id}`, {
     method: "PUT",
     body: code,
@@ -6,7 +6,7 @@ export async function putPolicy(opa, id, code) {
       "Content-Type": "text/plain",
     },
   });
-  if (!resp.ok) throw new Error(`eval policy: ${resp.status}`);
+  if (raise && !resp.ok) throw new Error(`eval policy: ${resp.status}`);
   return resp;
 }
 
