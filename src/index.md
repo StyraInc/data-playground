@@ -5,6 +5,7 @@ sql:
 # Data Playground
 
 ```js
+import {linter} from "npm:@codemirror/lint";
 import {RegoEditor} from "./components/RegoEditor.js";
 import {JSONEditor} from "./components/JSONEditor.js";
 import {evalPolicy, putPolicy} from "./components/helpers.js";
@@ -12,8 +13,8 @@ import {evalPolicy, putPolicy} from "./components/helpers.js";
 // constants and prep work
 const opa = "http://127.0.0.1:8181/";
 const filtersRego = await FileAttachment("policies/filters.rego").text();
-const input = {user: "Emma Clark", budget: "low"};
 const convertRego = await FileAttachment("policies/convert.rego").text();
+const input = {user: "Emma Clark", budget: "low"};
 const errors = Mutable([]);
 await putPolicy(opa, "convert.rego", convertRego);
 await putPolicy(opa, "filters.rego", filtersRego);
@@ -25,12 +26,11 @@ await putPolicy(opa, "filters.rego", filtersRego);
 <h2>Data Policy</h2>
 
 ```js
-import {linter} from "npm:@codemirror/lint";
 const linter0 = linter(view => {
   const doc = view.state.doc;
   return errors.value.map(({location: {row, col}, message}) => ({
     from: doc.line(row).from + col - 1,
-    to: doc.line(row+1).from,
+    to: doc.line(row+1).from, // next line, i.e., end of line used in "from"
     severity: "warning",
     message,
   }));
