@@ -34,3 +34,9 @@ products by user.
   3. go to http://127.0.0.1:3000 (localhost yields CORS errors when reaching EOPA)
 * Open Dev Tools network tab for insights if something goes wrong: not all errors
   are currently surfaced in a usable way.
+* Since the backend functionality isn't in any EOPA edge build yet, run `make build-local`
+  on the propor EOPA source branch, and start the stack via
+
+  ```
+  EOPA_IMAGE=ko.local/enterprise-opa-private:edge EOPA_PULL_POLICY=missing docker compose up
+  ```
