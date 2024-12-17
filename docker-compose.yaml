@@ -7,8 +7,8 @@ services:
       - eopa
 
   eopa:
-    image: ghcr.io/styrainc/enterprise-opa:edge
-    pull_policy: always # better when using :edge
+    image: ${EOPA_IMAGE:-ghcr.io/styrainc/enterprise-opa:edge}
+    pull_policy: ${EOPA_PULL_POLICY:-always}
     ports:
       - "8181:8181"
     command:
