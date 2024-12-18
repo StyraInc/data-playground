@@ -25,7 +25,7 @@ export default {
   // Some additional configuration options and their defaults:
   theme: "default", // try "light", "dark", "slate", etc.
   // header: "", // what to show in the header (HTML)
-  // footer: "Built with Observable.", // what to show in the footer (HTML)
+  footer: "Built with Observable. <a href=\"https://github.com/StyraInc/data-playground\">https://github.com/StyraInc/data-playground</a>", // what to show in the footer (HTML)
   // sidebar: true, // whether to show the sidebar
   // toc: true, // whether to show the table of contents
   pager: false, // whether to show previous & next links in the footer
