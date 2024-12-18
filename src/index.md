@@ -41,6 +41,14 @@ const evalInput = JSON.parse(evalInput0);
 </div>
 </div>
 
+<div class="card">
+<h2>Results</h2>
+
+```js
+const lookup = await sql([stmt]);
+view(query === "" ? html`<div class="warning" label="No query produced">Check errors in editor</div>` : Inputs.table(lookup, {select: false}));
+```
+</div>
 
 <div class="card">
 <h2>Query</h2>
@@ -58,14 +66,5 @@ const dbQuery = view(SQLEditor({value: defaultQuery}));
 const query = regoInput;
 const stmt = `${dbQuery}
 ${query || ''}`
-```
-</div>
-
-<div class="card">
-<h2>Results</h2>
-
-```js
-const lookup = await sql([stmt]);
-view(query === "" ? html`<div class="warning" label="No query produced">Check errors in editor</div>` : Inputs.table(lookup, {select: false}));
 ```
 </div>
