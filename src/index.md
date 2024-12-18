@@ -7,6 +7,7 @@ sql:
 ```js
 import {RegoEditor} from "./components/RegoEditor.js";
 import {JSONEditor} from "./components/JSONEditor.js";
+import {SQLEditor} from "./components/SQLEditor.js";
 import {putPolicy} from "./components/helpers.js";
 
 // constants and prep work
@@ -41,23 +42,30 @@ const evalInput = JSON.parse(evalInput0);
 </div>
 
 
-<div class="grid grid-cols-2">
-<div class="card grid-colspan-2">
-<h2>Lookup Results</h2>
+<div class="card">
+<h2>Query</h2>
 
 ```js
-const query = regoInput;
-const stmt = `select u.name as user, p.name as product, p.price::FLOAT as price
+const defaultQuery = `select u.name as user, p.name as product, p.price::FLOAT as price
 from orders.orders o
 inner join orders.users u on o.user_id = u.id
 inner join orders.order_items i on o.order_id = i.order_id
-inner join orders.products p on i.product_id = p.product_id
+inner join orders.products p on i.product_id = p.product_id`;
+const dbQuery = view(SQLEditor({value: defaultQuery}));
+````
+
+```js
+const query = regoInput;
+const stmt = `${dbQuery}
 ${query || ''}`
 ```
+</div>
+
+<div class="card">
+<h2>Results</h2>
 
 ```js
 const lookup = await sql([stmt]);
-view(query === "" ? html`<div class="warning" label="No query produced">Check errors in editor</div>` : Inputs.table(lookup));
+view(query === "" ? html`<div class="warning" label="No query produced">Check errors in editor</div>` : Inputs.table(lookup, {select: false}));
 ```
-</div>
 </div>
