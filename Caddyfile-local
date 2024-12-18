@@ -1,0 +1,12 @@
+{
+	debug
+}
+:3001 {
+	handle /v1/* { # EOPA
+		reverse_proxy http://127.0.0.1:8181
+	}
+
+	handle { # Observable Framework's dev server
+		reverse_proxy http://127.0.0.1:3000
+	}
+}

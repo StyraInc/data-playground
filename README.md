@@ -28,10 +28,11 @@ products by user.
   and the editor component would really appreciate spans (start, end). To work around
   this, we're extending all the starting points to the end of the line. It's close
   enough in most cases.
-* To do local development,
-  1. start EOPA on 127.0.0.1:8181 (no config or files needed)
+* For local development,
+  1. start EOPA on 127.0.0.1:8181 (no config or policy files needed)
   2. run `npm run dev` (`npm install` if you haven't before)
-  3. go to http://127.0.0.1:3000 (localhost yields CORS errors when reaching EOPA)
+  3. run `caddy run --config Caddyfile-local` to proxy both Observable Framework and EOPA
+  4. go to http://localhost:3001
 * Open Dev Tools network tab for insights if something goes wrong: not all errors
   are currently surfaced in a usable way.
 * If you want to test this against a development EOPA build, run `make build-local`
