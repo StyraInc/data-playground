@@ -7,7 +7,7 @@ we're working on in the Enterprise OPA Platform.
 ## Getting started
 
 1. Clone the repo
-2. `docker compose up --build` (expects an EOPA_LICENSE_KEY env var)
+2. `docker compose up --build` (respects, but **doesn't require** an `EOPA_LICENSE_KEY` env var)
 3. Go to http://localhost:3000
 
 
@@ -40,3 +40,9 @@ products by user.
   ```sh
   EOPA_IMAGE=ko.local/enterprise-opa-private:edge EOPA_PULL_POLICY=missing docker compose up
   ```
+
+
+## Community
+
+For questions, discussions and announcements related to Styra products, services and
+open source projects, please join the Styra community on [Slack](https://communityinviter.com/apps/styracommunity/signup)!

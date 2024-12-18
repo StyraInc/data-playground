@@ -11,7 +11,7 @@ import {SQLEditor} from "./components/SQLEditor.js";
 import {putPolicy} from "./components/helpers.js";
 
 // constants and prep work
-const opa = "http://127.0.0.1:8181/";
+const opa = "/"; // proxied
 const filtersRego = await FileAttachment("policies/filters.rego").text();
 const convertRego = await FileAttachment("policies/convert.rego").text();
 const input = {user: "Emma Clark", budget: "low"};

@@ -18,4 +18,4 @@ services:
       - --log-level=debug
       - --no-license-fallback
     environment:
-      EOPA_LICENSE_KEY: ${EOPA_LICENSE_KEY}
+      EOPA_LICENSE_KEY: ${EOPA_LICENSE_KEY:-}
