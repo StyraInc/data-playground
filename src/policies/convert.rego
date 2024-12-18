@@ -5,7 +5,7 @@ import rego.v1
 # TODO(sr): this is just good enough, the actual API is TBD
 partial_eval(inp, unknowns, query) := http.send({
 	"method": "POST",
-	"url": "http://127.0.0.1:8181/v1/schmompile",
+	"url": "http://127.0.0.1:8181/exp/compile",
 	"body": {
 		"query": query,
 		"unknowns": unknowns,
