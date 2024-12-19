@@ -52,6 +52,8 @@ view(query === "" ? html`<div class="warning" label="No query produced">Check er
 
 <div class="card">
 <h2>Query</h2>
+<h3>extra conditions:</h3>
+${query}
 
 ```js
 const defaultQuery = `select u.name as user, p.name as product, p.price::FLOAT as price
@@ -65,6 +67,6 @@ const dbQuery = view(SQLEditor({value: defaultQuery}));
 ```js
 const query = regoInput;
 const stmt = `${dbQuery}
-${query || ''}`
+${query || ''}`;
 ```
 </div>
