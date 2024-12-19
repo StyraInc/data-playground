@@ -44,12 +44,16 @@ export function RegoEditor({
           parent.value = String(""); // this means "no query produced"
           parent.dispatchEvent(new InputEvent("input", {bubbles: true}));
 
-          return errors.map(({location: {row, col}, message}) => ({
-            from: doc.line(row).from + col - 1,
-            to: doc.line(row+1).from, // next line, i.e., end of line used in "from"
-            severity: "warning",
-            message,
-          }));
+          return errors.map(({location: {row, col}, message, details}) => {
+            const dets = details?.details; // TODO(sr): API response shouldn't nest this like that
+            const msg = dets ? `${message} (${dets})` : message;
+            return {
+              from: doc.line(row).from + col - 1,
+              to: doc.line(row+1).from, // next line, i.e., end of line used in "from"
+              severity: "warning",
+              message: msg,
+            };
+          });
         }
 
         parent.value = String(result.query);
