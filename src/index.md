@@ -25,7 +25,8 @@ await putPolicy(opa, "filters.rego", filtersRego);
 <h2>Data Policy</h2>
 
 ```js
-const regoInput = view(RegoEditor({id: "filters.rego", opa, evalInput, rego: filtersRego}));
+const re = RegoEditor({id: "filters.rego", opa, input, rego: filtersRego});
+const regoInput = view(re.view);
 ```
 </div>
 <div class="card">
@@ -37,6 +38,7 @@ const evalInput0 = view(JSONEditor({value: JSON.stringify(input, null, 2)}));
 
 ```js
 const evalInput = JSON.parse(evalInput0);
+re.input = evalInput
 ```
 </div>
 </div>
