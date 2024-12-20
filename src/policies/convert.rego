@@ -21,34 +21,39 @@ conds(pe) := res if {
 	not pe.errors
 	not pe.result.support # "support modules" are not supported right now
 	res := or_({query_to_condition(q) | some q in pe.result.queries})
+	print(res)
 }
 
 query_to_condition(q) := and_({expr_to_condition(e) | some e in q})
 
 expr_to_condition(e) := op_(op(e), field(e), value(e))
 
-op(e) := r if {
+op(e) := valid_with_replacement(op0(e))
+
+op0(e) := o if {
 	e.terms[0].type == "ref"
 	e.terms[0].value[0].type == "var"
 	o := e.terms[0].value[0].value
-	r := is_valid(o)
 }
 
-is_valid(o) := u if {
-	o in {"eq", "lt", "gt", "neq"}
-	u := _replace(o)
-}
+valid_with_replacement(o) := _replace(o) if o in {"eq", "lt", "gt", "neq", "lower"}
 
 _replace("neq") := "ne"
 
-_replace(x) := x if x != "neq"
+_replace("lower") := "eq" # field() takes care of lower()
 
-field(e) := f if {
+_replace(x) := x if not x in {"neq", "lower"}
+
+field(e) := wrap_field(f, op0(e)) if {
 	# find the operand with 'input.*'
 	some t in array.slice(e.terms, 1, 3)
 	is_input_ref(t)
 	f := concat(".", [t.value[1].value, t.value[2].value])
 }
+
+wrap_field(f, "lower") := ["lower", f] if true
+
+else := f
 
 value(e) := v if {
 	# find the operand without 'input.*'
