@@ -35,13 +35,15 @@ op(e) := r if {
 }
 
 is_valid(o) := u if {
-	o in {"eq", "lt", "gt", "neq"}
+	o in {"eq", "lt", "gt", "neq", "lower"}
 	u := _replace(o)
 }
 
 _replace("neq") := "ne"
 
-_replace(x) := x if x != "neq"
+_replace("lower") := "eq-lower"
+
+_replace(x) := x if not x in {"neq", "lower"}
 
 field(e) := f if {
 	# find the operand with 'input.*'
