@@ -20,6 +20,7 @@ export function SQLEditor({
       linter(async view => {
         parent.value = String(editor.state.doc);
         parent.dispatchEvent(new InputEvent("input", {bubbles: true}));
+        return [];
       }),
     ]
   });
