@@ -13,19 +13,22 @@ import {putPolicy} from "./components/helpers.js";
 // constants and prep work
 const opa = "/"; // proxied
 const filtersRego = await FileAttachment("policies/filters.rego").text();
-const convertRego = await FileAttachment("policies/convert.rego").text();
 const input = {user: "Emma Clark", budget: "low"};
-await putPolicy(opa, "convert.rego", convertRego);
+const mapping = {
+  users: {$self: "u"},
+  products: {$self: "p"},
+  orders: {$self: "o"},
+  };
 await putPolicy(opa, "filters.rego", filtersRego);
 ```
 
 
 <div class="grid grid-cols-3">
-<div class="card grid-colspan-2">
+<div class="card grid-rowspan-2 grid-colspan-2">
 <h2>Data Policy</h2>
 
 ```js
-const re = RegoEditor({id: "filters.rego", opa, input, rego: filtersRego});
+const re = RegoEditor({id: "filters.rego", opa, input, rego: filtersRego, initialMappings: mapping});
 const regoInput = view(re.view);
 ```
 </div>
@@ -38,7 +41,19 @@ const evalInput0 = view(JSONEditor({value: JSON.stringify(input, null, 2)}));
 
 ```js
 const evalInput = JSON.parse(evalInput0);
-re.input = evalInput
+re.input = evalInput;
+```
+</div>
+<div class="card">
+<h2>Table Mapping</h2>
+
+```js
+const mapping0 = view(JSONEditor({value: JSON.stringify(mapping, null, 2)}));
+```
+
+```js
+const evalMapping = JSON.parse(mapping0);
+re.mapping = evalMapping;
 ```
 </div>
 </div>

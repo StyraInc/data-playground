@@ -6,6 +6,10 @@
 		reverse_proxy http://127.0.0.1:8181
 	}
 
+	handle /exp/* { # EOPA
+		reverse_proxy http://127.0.0.1:8181
+	}
+
 	handle { # Observable Framework's dev server
 		reverse_proxy http://127.0.0.1:3000
 	}
