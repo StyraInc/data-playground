@@ -1,9 +1,14 @@
 package filters
 
-import rego.v1
-
 user := input.user
 
+# METADATA
+# scope: document
+# custom:
+#   unknowns:
+#     - input.users
+#     - input.products
+#     - input.orders
 include if {
 	input.users.name == user
 	input.budget != "low"
@@ -15,18 +20,4 @@ include if {
 	input.users.name == user
 }
 
-conditions := data.convert.to_conditions(
-	input,
-	["input.products", "input.users", "input.orders", "input.order_items"],
-	"data.filters.include",
-)
-
-query := ucast.as_sql(
-	conditions, "postgres",
-	{
-		"users": {"$self": "u"},
-		"products": {"$self": "p"},
-		"order_items": {"$self": "i"},
-		"orders": {"$self": "o"},
-	},
-)
+_use_metadata := rego.metadata.rule()

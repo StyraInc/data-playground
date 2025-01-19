@@ -1,7 +1,7 @@
 import {EditorView} from "npm:@codemirror/view";
 import {lintGutter, linter} from "npm:@codemirror/lint";
 import {basicSetup} from "npm:codemirror";
-import {putPolicy, evalPolicy} from "./helpers.js";
+import {putPolicy, compilePolicy} from "./helpers.js";
 
 export function RegoEditor({
   rego = "",
@@ -10,12 +10,14 @@ export function RegoEditor({
   opa = "http://127.0.0.1:8181/",
   id = "",
   evalInput = {}, // initial input, updates are set by `<instance>.input = ...`
+  initialMappings = {},
 } = {}) {
   const parent = document.createElement("div");
   parent.style = style;
   parent.value = value;
 
   let input = evalInput;
+  let mappings = initialMappings;
 
   const peLinter = linter(async view => {
     const doc = view.state.doc;
@@ -32,10 +34,9 @@ export function RegoEditor({
         message: `${code}: ${message}`,
       }));
     }
-    // If we make it this far, the policy is on the server, so let's eval it:
-    const result = (await (await evalPolicy(opa, input)).json()).result;
-    const query = result.query;
-    const errors = result.conditions?.errors;
+    // If we make it this far, the policy is on the server, so let's compile it:
+    const { result, errors } = await (await compilePolicy(opa, input, mappings)).json();
+    const query = result;
     if (errors) {
       parent.value = String(""); // this means "no query produced"
       parent.dispatchEvent(new InputEvent("input", {bubbles: true}));
@@ -52,7 +53,7 @@ export function RegoEditor({
       });
     }
 
-    parent.value = String(result.query);
+    parent.value = String(result); // TODO(sr) check this
     parent.dispatchEvent(new InputEvent("input", {bubbles: true}));
     return [];
   }, {
@@ -76,6 +77,10 @@ export function RegoEditor({
     view: parent,
     set input(i) {
       input = i;
+      forceLinting(editor, lintPlugin);
+    },
+    set mappings(i) {
+      mappings = i;
       forceLinting(editor, lintPlugin);
     },
   };
