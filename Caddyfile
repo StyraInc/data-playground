@@ -6,6 +6,9 @@
 	handle /v1/* {
 		reverse_proxy http://eopa:8181
 	}
+	handle /exp/* {
+		reverse_proxy http://eopa:8181
+	}
 
 	handle {
 		root * /usr/share/caddy
