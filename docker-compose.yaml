@@ -17,5 +17,6 @@ services:
       - --addr=:8181
       - --log-level=debug
       - --no-license-fallback
+      - --set=plugins.exp_compile_api={}
     environment:
       EOPA_LICENSE_KEY: ${EOPA_LICENSE_KEY:-}
