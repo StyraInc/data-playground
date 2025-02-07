@@ -7,7 +7,7 @@ services:
       - eopa
 
   eopa:
-    image: ${EOPA_IMAGE:-ghcr.io/styrainc/enterprise-opa:edge}
+    image: ${EOPA_IMAGE:-ghcr.io/styrainc/enterprise-opa:latest}
     pull_policy: ${EOPA_PULL_POLICY:-always}
     ports:
       - "8181:8181"
@@ -17,6 +17,5 @@ services:
       - --addr=:8181
       - --log-level=debug
       - --no-license-fallback
-      - --set=plugins.exp_compile_api={}
     environment:
       EOPA_LICENSE_KEY: ${EOPA_LICENSE_KEY:-}

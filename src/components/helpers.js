@@ -11,19 +11,20 @@ export async function putPolicy(opa, id, code, raise = true) {
 }
 
 export  async function compilePolicy(opa, input, mappings = {}, query = "data.filters.include") {
-  const resp = await fetch(`${opa}exp/compile`, {
+  const resp = await fetch(`${opa}v1/compile`, {
     method: "POST",
     body: JSON.stringify({
       input,
       query,
       options: {
-        dialect: "postgres",
-        targetSQLTableMappings: mappings,
+        targetSQLTableMappings: {
+          postgres: mappings,
+        },
       },
     }),
     headers: {
       "Content-Type": "application/json",
-      "Accept": "application/vnd.styra.sql+json"
+      "Accept": "application/vnd.styra.sql.postgres+json"
     },
   });
   return resp;
