@@ -19,5 +19,3 @@ include if {
 	input.products.price < 500
 	input.users.name == user
 }
-
-_use_metadata := rego.metadata.rule()
