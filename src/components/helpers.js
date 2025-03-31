@@ -18,13 +18,13 @@ export  async function compilePolicy(opa, input, mappings = {}, query = "data.fi
       query,
       options: {
         targetSQLTableMappings: {
-          postgres: mappings,
+          postgresql: mappings,
         },
       },
     }),
     headers: {
       "Content-Type": "application/json",
-      "Accept": "application/vnd.styra.sql.postgres+json"
+      "Accept": "application/vnd.styra.sql.postgresql+json"
     },
   });
   return resp;
