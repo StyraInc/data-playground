@@ -35,8 +35,7 @@ export function RegoEditor({
       }));
     }
     // If we make it this far, the policy is on the server, so let's compile it:
-    const { result, errors } = await (await compilePolicy(opa, input, mappings)).json();
-    const { query } = result;
+    const { query, errors } = await compilePolicy(opa, input, mappings);
     if (errors) {
       parent.value = String(""); // this means "no query produced"
       parent.dispatchEvent(new InputEvent("input", {bubbles: true}));
@@ -52,7 +51,6 @@ export function RegoEditor({
         };
       });
     }
-
     parent.value = String(query);
     parent.dispatchEvent(new InputEvent("input", {bubbles: true}));
     return [];
